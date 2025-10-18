@@ -1,0 +1,6 @@
+faiss-cpu
+fastapi
+open_clip_torch[training]
+uvicorn
+openpyxl
+pandas
