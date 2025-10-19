@@ -19,7 +19,7 @@ It integrates multi-modal understanding, spatial reasoning, and generative capab
 
 - **Python** / **PyTorch** / **Transformers**
 - **Computer Vision:** SAM / Grounding DINO / AnyDoor  
-- **Generative Models:** Stable Diffusion / ComfyUI / LoRA Fine-Tuning  
+- **Generative Models:** Stable Diffusion / Gemini-flash / LoRA Fine-Tuning  
 - **Frontend (Optional):** React + Tailwind / Streamlit Interface  
 
 ---
