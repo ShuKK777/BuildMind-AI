@@ -10,12 +10,12 @@ export function saveState(s){try{localStorage.setItem('buildmind-demo-v1',JSON.s
 export function metrics(s){const factor=[.82,1,1.18][s.height];return {height:s.original?72:Math.round(6+(variants[s.variant].height-6)*factor),area:Math.round(variants[s.variant].area*factor),population:[0,4200,8600][s.stage],green:[62,44,38][s.stage]};}
 export const tour = [
  {at:0,page:'plan',stage:0,selected:'B01',text:['从一片滨水土地，开始构想城市。','A waterfront site. A new urban possibility.']},
- {at:10,page:'plan',stage:1,selected:'A02',text:['回放开发阶段，让规划过程清晰可见。','Explore a staged development scenario.']},
- {at:20,page:'plan',stage:2,text:['住宅、办公与公共空间，在同一个街区协同。','Homes, workplaces and public space, together.']},
- {at:30,page:'design',original:false,variant:0,text:['方案一：流动曲面塑造滨水天际线。','Option 01: a fluid silhouette on the waterfront.']},
- {at:40,page:'design',original:false,variant:1,text:['方案二：双塔与空中连廊连接商务空间。','Option 02: twin towers connected by a sky bridge.']},
- {at:50,page:'design',original:false,variant:2,text:['方案三：层叠花园将绿意带入建筑。','Option 03: terraced gardens bring nature upwards.']},
- {at:60,page:'design',original:false,variant:2,night:true,text:['保留选定方案，继续探索夜间场景。','Keep your chosen design. Explore it after dark.']},
- {at:70,page:'review',text:['审查示范文档，每个问题都能定位与追溯。','Review the sample. Trace every finding to its source.']},
- {at:82,page:'plan',stage:2,text:['让规划、设计与审查，汇聚到同一个项目。','One project, from planning to design and review.']}
+ {at:5,page:'plan',stage:1,selected:'A02',text:['回放开发阶段，让规划过程清晰可见。','Explore a staged development scenario.']},
+ {at:10,page:'plan',stage:2,text:['住宅、办公与公共空间，在同一个街区协同。','Homes, workplaces and public space, together.']},
+ {at:15,page:'design',original:false,variant:0,text:['方案一：流动曲面塑造滨水天际线。','Option 01: a fluid silhouette on the waterfront.']},
+ {at:20,page:'design',original:false,variant:1,text:['方案二：双塔与空中连廊连接商务空间。','Option 02: twin towers connected by a sky bridge.']},
+ {at:25,page:'design',original:false,variant:2,text:['方案三：层叠花园将绿意带入建筑。','Option 03: terraced gardens bring nature upwards.']},
+ {at:30,page:'design',original:false,variant:2,night:true,text:['保留选定方案，继续探索夜间场景。','Keep your chosen design. Explore it after dark.']},
+ {at:35,page:'review',text:['审查示范文档，每个问题都能定位与追溯。','Review the sample. Trace every finding to its source.']},
+ {at:41,page:'plan',stage:2,text:['让规划、设计与审查，汇聚到同一个项目。','One project, from planning to design and review.']}
 ];

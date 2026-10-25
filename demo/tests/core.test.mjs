@@ -4,14 +4,15 @@ import {readFile,readdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {defaults,validateState,metrics,tour} from '../state.js';
+import {SHOWCASE_DURATION,ShowcaseClock,easeMotion} from '../motion.js';
 import {sample,validateFile} from '../documents.js';
 const root=path.dirname(fileURLToPath(new URL('../index.html',import.meta.url)));
 test('persisted state rejects invalid settings without corrupting defaults',()=>{const s=validateState({variant:99,height:-1,page:'bad',lang:'xx',stage:Infinity,night:'false',selected:'<script>'});assert.deepEqual(s,defaults);assert.equal(validateState({variant:2,height:2,lang:'en',night:true}).variant,2);});
 test('height choices update displayed parameters monotonically for all variants',()=>{for(let v=0;v<3;v++){const m=[0,1,2].map(h=>metrics({...defaults,variant:v,height:h,original:false}));assert.ok(m[0].height<m[1].height&&m[1].height<m[2].height);assert.ok(m[0].area<m[1].area&&m[1].area<m[2].area);}});
-test('tour has 9 ordered stages and includes every module within 90 seconds',()=>{assert.equal(tour.length,9);assert.equal(tour[0].at,0);assert.ok(tour.at(-1).at<90);for(let i=1;i<tour.length;i++)assert.ok(tour[i].at>tour[i-1].at);assert.deepEqual(new Set(tour.map(x=>x.page)),new Set(['plan','design','review']));});
+test('tour has 9 ordered stages and includes every module within 45 seconds',()=>{assert.equal(tour.length,9);assert.equal(tour[0].at,0);assert.ok(tour.at(-1).at<SHOWCASE_DURATION);for(let i=1;i<tour.length;i++)assert.ok(tour[i].at>tour[i-1].at);assert.deepEqual(new Set(tour.map(x=>x.page)),new Set(['plan','design','review']));});
 test('all preset findings map to unique source paragraphs and bilingual evidence',()=>{assert.equal(new Set(sample.issues.map(i=>i.id)).size,3);for(const issue of sample.issues){assert.ok(sample.paragraphs.some(p=>p.id===issue.id));assert.equal(issue.quote.length,2);assert.match(issue.rule,/^BM-NM-01 §/);}for(const p of sample.paragraphs)assert.equal(p.text.length,2);});
 test('file intake only permits bounded DOCX/PDF files',()=>{assert.equal(validateFile({name:'test.DOCX',size:1}),null);assert.equal(validateFile({name:'test.pdf',size:20*1024*1024}),null);assert.equal(validateFile({name:'test.doc',size:1}),'type');assert.equal(validateFile({name:'test.pdf',size:20*1024*1024+1}),'size');});
-test('all browser entry assets are local and shipped, including recursive Three.js imports',async()=>{const html=await readFile(path.join(root,'index.html'),'utf8');assert.doesNotMatch(html,/(?:src|href)=["']https?:/);const files=['app.js','state.js','scene.js','software-renderer.js','print-scene.js','assets/print-assembly.js','documents.js','styles.css','vendor/three.module.min.js','vendor/three.core.min.js','vendor/OrbitControls.js','vendor/mammoth.browser.min.js'];for(const f of files){const text=await readFile(path.join(root,f),'utf8');assert.ok(text.length>0);if(!f.startsWith('vendor/'))assert.doesNotMatch(text,/\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b/);}const module=await readFile(path.join(root,'vendor/three.module.min.js'),'utf8');assert.match(module,/three\.core\.min\.js/);});
+test('all browser entry assets are local and shipped, including recursive Three.js imports',async()=>{const html=await readFile(path.join(root,'index.html'),'utf8');assert.doesNotMatch(html,/(?:src|href)=["']https?:/);const files=['motion.js','app.js','state.js','scene.js','software-renderer.js','print-scene.js','assets/print-assembly.js','documents.js','styles.css','vendor/three.module.min.js','vendor/three.core.min.js','vendor/OrbitControls.js','vendor/mammoth.browser.min.js'];for(const f of files){const text=await readFile(path.join(root,f),'utf8');assert.ok(text.length>0);if(!f.startsWith('vendor/'))assert.doesNotMatch(text,/\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b/);}const module=await readFile(path.join(root,'vendor/three.module.min.js'),'utf8');assert.match(module,/three\.core\.min\.js/);});
 
 test('print assembly has the source 8 + 19 buildings; A02 is the highest',async()=>{
  const rows=JSON.parse(await readFile(path.join(root,'assets/part-manifest.json'),'utf8'));
@@ -35,4 +36,28 @@ test('bundled vendor bytes match the recorded SHA-256 manifest',async()=>{
  const {createHash}=await import('node:crypto'),manifest=JSON.parse(await readFile(path.join(root,'vendor/SHA256.json'),'utf8'));
  assert.ok(manifest['pdf.worker.min.mjs']);assert.ok(Object.keys(manifest).some(p=>p.startsWith('cmaps/')));assert.ok(Object.keys(manifest).some(p=>p.startsWith('wasm/')));
  for(const [file,expected]of Object.entries(manifest)){const bytes=await readFile(path.join(root,'vendor',file));assert.equal(createHash('sha256').update(bytes).digest('hex'),expected,file);}
+});
+
+
+test('showcase finishes in 45 seconds regardless of frame frequency',()=>{
+ for(const fps of [12,30,60,120]){
+  const clock=new ShowcaseClock();clock.start(1000);
+  for(let frame=1;frame<=fps*45;frame++)clock.advance(1000+frame*1000/fps);
+  assert.ok(Math.abs(clock.elapsed-45)<.000001);clock.advance(47000);
+  assert.equal(clock.elapsed,45);assert.equal(clock.progress,1);assert.equal(clock.finished,true);
+ }
+ assert.deepEqual(tour.map(step=>step.at),[0,5,10,15,20,25,30,35,41]);
+});
+test('pause, resume, stop and restart do not consume paused time or retain old progress',()=>{
+ const clock=new ShowcaseClock();clock.start(0);clock.advance(7000);clock.setPaused(true,7500);
+ clock.advance(30000);assert.equal(clock.elapsed,7.5);
+ clock.setPaused(false,50000);clock.advance(52500);assert.equal(clock.elapsed,10);
+ clock.stop();clock.advance(90000);assert.equal(clock.elapsed,10);
+ clock.start(100000);assert.equal(clock.elapsed,0);assert.equal(clock.step,-1);assert.equal(clock.paused,false);
+ clock.advance(145000);assert.equal(clock.finished,true);
+});
+test('camera easing is monotonic with gently stationary endpoints',()=>{
+ assert.equal(easeMotion(-1),0);assert.equal(easeMotion(2),1);assert.equal(easeMotion(.5),.5);
+ let previous=0;for(let i=0;i<=100;i++){const value=easeMotion(i/100);assert.ok(value>=previous);previous=value;}
+ assert.ok(easeMotion(.001)<.000001);assert.ok(1-easeMotion(.999)<.000001);
 });

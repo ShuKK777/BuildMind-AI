@@ -1,10 +1,13 @@
 import {CityScene} from './scene.js';
+import {ShowcaseClock,SHOWCASE_DURATION} from './motion.js';
 import {loadState,saveState,defaults,variants,metrics,tour} from './state.js';
 import {sample,validateFile,readDocx,loadPdf} from './documents.js';
 
 let pdfRenderTicket=0;
 let state=loadState(),city,thumbs=[],doc={kind:'sample'},issue='access',versions=[],uploadToken=0;
-let presentation={running:false,paused:false,elapsed:0,last:0,step:-1};
+const presentation=new ShowcaseClock();
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+let tourFrame=0,tourMarkupKey='';
 const $=s=>document.querySelector(s),t=(zh,en)=>state.lang==='zh'?zh:en,bi=a=>a[state.lang==='zh'?0:1];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths={city:'M3 21V8l6-3v16M9 21V3l7 3v15M16 10l5 3v8M2 21h20M5 10h1m-1 4h1m5-6h2m-2 4h2m-2 4h2m5-1h1',design:'m4 17 11-11 3 3L7 20H4v-3ZM13 8l3 3M16 4l2-2 4 4-2 2M3 7h5M5.5 4.5v5',doc:'M14 2H5v20h14V7l-5-5Zm0 0v5h5M8 11h8M8 15h8M8 18h5',play:'m8 5 11 7-11 7V5Z',pause:'M8 5v14M16 5v14',arrow:'M4 12h16m-6-6 6 6-6 6',layers:'m12 3 10 6-10 6L2 9l10-6Zm-9 11 9 5 9-5M3 18l9 5 9-5',sun:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2',moon:'M20 15a8 8 0 0 1-11-11 9 9 0 1 0 11 11Z',tree:'m12 2-7 9h3l-5 7h8v4h2v-4h8l-5-7h3l-7-9Z',reset:'M3 10a9 9 0 1 1 1 8M3 3v7h7',focus:'M8 3H3v5M16 3h5v5M3 16v5h5m8 0h5v-5M12 8v8M8 12h8',upload:'M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6',check:'m5 12 4 4L19 6',close:'m6 6 12 12M6 18 18 6',globe:'M21 12a9 9 0 1 0-18 0 9 9 0 0 0 18 0ZM3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18',expand:'M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5',shield:'m12 2 8 3v7c0 5-8 10-8 10S4 17 4 12V5l8-3Zm-4 10 3 3 5-6',pin:'M19 9c0 6-7 13-7 13S5 15 5 9a7 7 0 0 1 14 0ZM12 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6',clock:'M21 12a9 9 0 1 0-18 0 9 9 0 0 0 18 0ZM12 7v5l3 2',chevron:'m9 5 7 7-7 7',info:'M12 11v6m0-10v1M21 12a9 9 0 1 0-18 0 9 9 0 0 0 18 0Z'};
@@ -13,13 +16,20 @@ const btn=(action,label,ic,cls='',extra='')=>`<button type="button" data-action=
 const actionIcon=(action,label,ic,extra='')=>`<button type="button" data-action="${action}" class="icon-button" title="${label}" aria-label="${label}" ${extra}>${icon(ic)}</button>`;
 function notify(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(notify.timer);notify.timer=setTimeout(()=>$('#toast').classList.remove('show'),3200);}
 function record(){versions.unshift({variant:state.variant,height:state.height,material:state.material,original:state.original});versions=versions.slice(0,5);}
-function change(patch,{history=false}={}){if(history)record();Object.assign(state,patch);saveState(state);render();}
+function change(patch,{history=false}={}){
+ const previousPage=state.page;
+ if(history)record();Object.assign(state,patch);saveState(state);render();
+ if(!reducedMotion.matches){
+  const target=previousPage!==state.page?$('#workspace'):$('#inspector');
+  if(target&&!target.hidden){target.getAnimations().forEach(a=>a.cancel());target.animate([{opacity:.55,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:previousPage!==state.page?420:260,easing:'cubic-bezier(.22,1,.36,1)'});}
+ }
+}
 
-$('#app').innerHTML=`<aside id="sidebar"></aside><div class="shell"><header id="header"></header><main id="workspace"><section id="city-view"><div id="scene"></div><div id="scene-heading"></div><div id="scene-tools"></div><div id="map-legend"></div><div id="minimap"></div><div id="scene-foot"></div><div id="timeline"></div><div id="design-tray"></div></section><aside id="inspector"></aside><section id="review-view"></section></main><footer id="statusbar"></footer></div><section id="tourbar" aria-live="polite"></section><input type="file" id="file-input" accept=".docx,.pdf" hidden>`;
+$('#app').innerHTML=`<aside id="sidebar"></aside><div class="shell"><header id="header"></header><main id="workspace"><section id="city-view"><div id="scene"></div><div id="scene-heading"></div><div id="scene-tools"></div><div id="map-legend"></div><div id="minimap"></div><div id="scene-foot"></div><div id="timeline"></div><div id="design-tray"></div></section><aside id="inspector"></aside><section id="review-view"></section></main><footer id="statusbar"></footer></div><section id="tourbar" aria-label="Showcase playback"></section><input type="file" id="file-input" accept=".docx,.pdf" hidden>`;
 try{city=new CityScene($('#scene'),id=>{if(presentation.running)stopTour();change({selected:id,...(state.page==='design'&&id!=='A02'?{page:'plan'}:{})});});city.apply(state);thumbs=[0,1,2,-1].map(i=>city.thumbnail(i));}catch(e){console.error(e);$('#scene').innerHTML=`<div class="webgl-error"><h2>${t('需要启用三维图形加速','3D graphics acceleration required')}</h2><p>${t('请在现代浏览器中启用硬件加速后重新打开。文档审查仍可使用。','Enable hardware acceleration in a modern browser. Document review remains available.')}</p></div>`;}
 function render(){document.documentElement.lang=state.lang==='zh'?'zh-CN':'en';document.title=t('BuildMind AI · 智筑未来','BuildMind AI · Urban Design Studio');document.body.classList.toggle('night',state.night);document.body.dataset.page=state.page;
  $('#sidebar').innerHTML=`<a class="brand" href="#" data-action="home" aria-label="BuildMind home"><img src="./mark.svg" alt=""><span>Build<span>Mind</span></span></a><div class="nav-label">${t('项目工作台','WORKSPACE')}</div><nav aria-label="${t('主导航','Main navigation')}">${[['plan','city','智策','Plan'],['design','design','智绘','Design'],['review','doc','智管','Review']].map(([page,ic,zh,en],i)=>`<button class="nav-item ${state.page===page?'active':''}" data-action="page" data-value="${page}" ${state.page===page?'aria-current="page"':''}>${icon(ic)}<span>${t(zh,en)}</span><small>0${i+1}</small></button>`).join('')}</nav><div class="sidebar-bottom"><div class="project-icon">${icon('city')}</div><span>${t('北都 · 滨水新境','Northern Metropolis')}</span><small>${t('示范项目 / NM-01','Demo project / NM-01')}</small><div class="offline-dot">${t('离线就绪','Offline ready')}</div></div>`;
- $('#header').innerHTML=`<div class="breadcrumb">${t('项目','Projects')}${icon('chevron')}<strong>${t('北都 · 滨水新境','Waterfront Futures')}</strong><span class="tag">${t('概念演示','Concept demo')}</span></div><div class="header-actions">${btn('lang',state.lang==='zh'?'EN':'中文','globe','language')}${actionIcon('fullscreen',t('全屏演示','Fullscreen'),'expand')}${btn('tour',t('一键演示','Play showcase'),'play','primary')}</div>`;
+ $('#header').innerHTML=`<div class="breadcrumb">${t('项目','Projects')}${icon('chevron')}<strong>${t('北都 · 滨水新境','Waterfront Futures')}</strong><span class="tag">${t('概念演示','Concept demo')}</span></div><div class="header-actions">${btn('lang',state.lang==='zh'?'EN':'中文','globe','language')}${actionIcon('fullscreen',t('全屏演示','Fullscreen'),'expand')}${btn('tour',t('一键演示 · 45秒','Play showcase · 45s'),'play','primary')}</div>`;
  const review=state.page==='review';$('#city-view').hidden=review;$('#inspector').hidden=review;$('#review-view').hidden=!review;
  if(review)renderReview();else{
  const m=metrics(state),v=variants[state.variant];
@@ -47,11 +57,66 @@ function renderReview(){const isSample=doc.kind==='sample';$('#review-view').inn
  $('#findings').innerHTML=isSample?`<div class="findings-title"><h2>${t('审查发现','Review findings')}<span>03</span></h2><p>${t('1 项重点问题 · 2 项待完善','1 priority finding · 2 improvements')}</p></div><div class="review-disclaimer">${icon('info')}<span>${t('预设示例；依据为项目演示规则，并非真实法规或自动审查结论。','Preset findings based on demo project rules, not statutory regulations or automated review.')}</span></div>${sample.issues.map((i,n)=>`<div class="finding ${i.id===issue?'active':''}"><button data-action="issue" data-value="${i.id}" aria-expanded="${i.id===issue}"><span class="severity ${i.level}">${String(n+1).padStart(2,'0')}</span><strong>${bi(i.title)}</strong>${icon('chevron')}</button>${i.id===issue?`<div class="finding-detail"><label>${t('修改建议','Suggested revision')}</label><p>${bi(i.suggestion)}</p><div class="reference"><span>${icon('shield')}${t('项目示范要求','Demo project requirement')}</span><strong>${i.rule}</strong><p>${bi(i.quote)}</p><small>${t('《北都滨水示范项目管理要求》· 演示专用','Northern Waterfront Demo Project Requirements · Demonstration only')}</small></div>${btn('locate',t('定位文档原文','Locate source text'),'pin','text-button',`data-value="${i.id}"`)}</div>`:''}</div>`).join('')}<div class="review-summary">${icon('check')}<span>${t('问题、原文与依据一一关联','Every finding is linked to text and evidence')}</span></div>`:`<div class="empty-state">${icon('shield')}<h2>${doc.kind==='error'?t('导入未成功','Import unsuccessful'):doc.kind==='loading'?t('正在读取文档','Reading document'):t('文档已导入，尚未审查','Imported. Not yet reviewed.')}</h2><p>${t('此离线演示仅对内置示范文档展示预设审查结果。你的文件不会上传，也不会套用示范结论。','This offline demo only provides preset findings for the built-in sample. Your file is not uploaded or assigned sample findings.')}</p>${btn('sample',t('体验示范审查','Explore sample review'),'arrow','secondary')}<small>DOCX / PDF · ${t('最大 20 MB','Maximum 20 MB')}</small></div>`;
 }
 async function renderPdfPreview(){const ticket=++pdfRenderTicket,currentDoc=doc;try{const page=await currentDoc.pdf.getPage(currentDoc.page);if(ticket!==pdfRenderTicket||currentDoc!==doc||state.page!=='review')return;const canvas=$('#pdf-canvas');if(!canvas)return;const base=page.getViewport({scale:1});const scale=Math.min(1.8,Math.max(.4,($('#document-content').clientWidth-48)/base.width));const viewport=page.getViewport({scale});canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;}catch(e){if(ticket===pdfRenderTicket){const sheet=$('.pdf-sheet');if(sheet)sheet.textContent=t('此页无法渲染，请尝试其他 PDF。','This page cannot be rendered. Try another PDF.');}}}
-function renderTour(){const el=$('#tourbar');el.hidden=!presentation.running;if(!presentation.running)return;const step=tour[Math.max(0,presentation.step)];el.innerHTML=`<div class="tour-caption"><small>${t('项目演示','PROJECT SHOWCASE')} <b>${String(presentation.step+1).padStart(2,'0')} / 09</b></small><strong>${bi(step.text)}</strong></div><div class="tour-controls">${actionIcon('tour-pause',presentation.paused?t('继续演示','Resume showcase'):t('暂停演示','Pause showcase'),presentation.paused?'play':'pause')}<span>${String(Math.floor(presentation.elapsed)).padStart(2,'0')} / 90s</span>${actionIcon('tour-restart',t('重新播放','Restart showcase'),'reset')}${actionIcon('tour-stop',t('结束演示','Exit showcase'),'close')}</div><div class="tour-progress" style="width:${presentation.elapsed/90*100}%"></div>`;}
-function startTour(){if(!city){notify(t('三维场景尚不可用','3D scene is unavailable'));return;}presentation={running:true,paused:false,elapsed:0,last:performance.now(),step:-1};docToSample();change({page:'plan',stage:0,night:false,height:1,material:0,variant:0,original:true,selected:'A02',green:true});city.resetCamera();applyTourStep();}
-function stopTour(){presentation.running=false;presentation.paused=false;if(city)city.autoOrbit=false;renderTour();}
-function applyTourStep(){const idx=tour.findLastIndex(x=>x.at<=presentation.elapsed);if(idx===presentation.step)return;presentation.step=idx;const {at,text,...patch}=tour[idx];if(patch.page==='review')docToSample();change(patch);if(patch.page==='design')city?.focus();if(idx===8)city?.resetCamera();}
-setInterval(()=>{if(!presentation.running)return;const now=performance.now();if(!presentation.paused){presentation.elapsed=Math.min(90,presentation.elapsed+(now-presentation.last)/1000);applyTourStep();}presentation.last=now;if(presentation.elapsed>=90){stopTour();notify(t('演示完成，你可以继续自由探索。','Showcase complete. Continue exploring.'));}else renderTour();},200);
+function renderTour(){
+ const el=$('#tourbar');el.hidden=!presentation.running;
+ if(!presentation.running){tourMarkupKey='';return;}
+ const step=tour[Math.max(0,presentation.step)];
+ const key=`${state.lang}:${presentation.step}`;
+ // Keep the controls mounted throughout playback, including keyboard focus.
+ if(!el.querySelector('.tour-controls')){
+  el.innerHTML=`<div class="tour-caption" aria-live="polite"><small></small><strong></strong></div><div class="tour-controls"><button type="button" data-action="tour-pause" class="icon-button"></button><span class="tour-time" aria-live="off"></span>${actionIcon('tour-restart',t('重新播放','Restart showcase'),'reset')}${actionIcon('tour-stop',t('结束演示','Exit showcase'),'close')}</div><div class="tour-progress"></div>`;
+ }
+ if(tourMarkupKey!==key){
+  el.querySelector('.tour-caption small').innerHTML=`${t('项目演示','PROJECT SHOWCASE')} <b>${String(presentation.step+1).padStart(2,'0')} / 09</b>`;
+  const caption=el.querySelector('.tour-caption strong');caption.textContent=bi(step.text);
+  if(!reducedMotion.matches)caption.animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:350,easing:'ease-out'});
+  for(const [action,label] of [['tour-restart',t('重新播放','Restart showcase')],['tour-stop',t('结束演示','Exit showcase')]]){const control=el.querySelector(`[data-action="${action}"]`);control.title=label;control.setAttribute('aria-label',label);}
+  tourMarkupKey=key;
+ }
+ const pause=el.querySelector('[data-action="tour-pause"]'),label=presentation.paused?t('继续演示','Resume showcase'):t('暂停演示','Pause showcase');
+ if(pause.getAttribute('aria-label')!==label){pause.title=label;pause.setAttribute('aria-label',label);pause.innerHTML=icon(presentation.paused?'play':'pause');}
+ updateTourProgress();
+}
+function updateTourProgress(){
+ const time=$('#tourbar .tour-time'),progress=$('#tourbar .tour-progress');
+ const text=`${String(Math.floor(presentation.elapsed)).padStart(2,'0')} / ${SHOWCASE_DURATION}s`;
+ if(time&&time.textContent!==text)time.textContent=text;
+ if(progress)progress.style.transform=`scaleX(${presentation.progress})`;
+}
+function tourTick(now){
+ if(!presentation.running)return;
+ presentation.advance(now);applyTourStep();updateTourProgress();
+ if(presentation.finished){stopTour();notify(t('45 秒演示完成，你可以继续自由探索。','45-second showcase complete. Continue exploring.'));return;}
+ if(!presentation.paused)tourFrame=requestAnimationFrame(tourTick);
+}
+function startTour(){
+ if(!city){notify(t('三维场景尚不可用','3D scene is unavailable'));return;}
+ cancelAnimationFrame(tourFrame);presentation.start(performance.now());city.setPlaybackPaused(false);docToSample();
+ change({page:'plan',stage:0,night:false,height:1,material:0,variant:0,original:true,selected:'B01',green:true});
+ city.resetCamera();applyTourStep();tourFrame=requestAnimationFrame(tourTick);
+}
+function stopTour(){
+ cancelAnimationFrame(tourFrame);presentation.stop();
+ if(city){city.autoOrbit=false;city.setPlaybackPaused(false);}
+ renderTour();
+}
+function pauseTour(paused){
+ if(!presentation.running)return;
+ presentation.setPaused(paused,performance.now());cancelAnimationFrame(tourFrame);
+ if(city){city.autoOrbit=!paused;city.setPlaybackPaused(paused);}
+ renderTour();if(!paused)tourFrame=requestAnimationFrame(tourTick);
+}
+function applyTourStep(){
+ const idx=tour.findLastIndex(x=>x.at<=presentation.elapsed);
+ if(idx===presentation.step)return;
+ const previousPage=state.page;presentation.step=idx;
+ const {at,text,...patch}=tour[idx];
+ if(patch.page==='review')docToSample();
+ change(patch);
+ // Keep the same moving camera between landmark options; only travel at module boundaries.
+ if(patch.page==='design'&&previousPage!=='design')city?.focus();
+ if(idx===8)city?.resetCamera();
+}
 function docToSample(){uploadToken++;pdfRenderTicket++;doc.pdf?.destroy();doc={kind:'sample'};issue='access';}
 async function uploadFile(file){const error=validateFile(file);if(error){notify(error==='size'?t('文件不能超过 20 MB。','Files must be no larger than 20 MB.'):t('请选择 DOCX 或 PDF 文件；旧版 DOC 请先另存为 DOCX。','Choose DOCX or PDF. Save legacy DOC files as DOCX first.'));return;}const token=++uploadToken;pdfRenderTicket++;doc.pdf?.destroy();doc={kind:'loading',name:file.name};renderReview();try{const bytes=new Uint8Array(await file.slice(0,5).arrayBuffer());const pdf=/\.pdf$/i.test(file.name);if(pdf&&new TextDecoder().decode(bytes)!=='%PDF-')throw new Error('Invalid PDF header');if(!pdf&&(bytes[0]!==80||bytes[1]!==75))throw new Error('Invalid DOCX archive');const parsed=pdf?{kind:'pdf',name:file.name,pdf:await loadPdf(file),page:1}:{kind:'docx',name:file.name,paragraphs:await readDocx(file)};if(token!==uploadToken){parsed.pdf?.destroy();return;}doc=parsed;}catch(e){if(token!==uploadToken)return;doc={kind:'error',name:file.name};console.warn('Document parsing failed:',e.message);}if(state.page==='review')renderReview();}
 document.addEventListener('click',async event=>{const button=event.target.closest('[data-action]');if(!button)return;event.preventDefault();const a=button.dataset.action,v=button.dataset.value;
@@ -60,11 +125,11 @@ document.addEventListener('click',async event=>{const button=event.target.closes
  case'variant':change({variant:Number(v),original:false,stage:2,selected:'A02'},{history:true});break;case'height':change({height:Number(v),original:false,selected:'A02'},{history:true});break;case'material':change({material:Number(v),original:false,selected:'A02'},{history:true});break;case'night':change({night:!state.night});break;case'green':change({green:!state.green});break;case'stage':change({stage:Number(v),selected:Number(v)===0?'B01':'A02'});break;case'camera-reset':city?.resetCamera();break;case'zoom-in':city?.zoom(1.2);break;case'zoom-out':city?.zoom(1/1.2);break;
  case'edit-landmark':change({page:'design',stage:2,selected:'A02'});city?.focus();break;case'back-city':change({page:'plan'});city?.resetCamera();notify(t('方案已应用到街区。','Design applied to the district.'));break;case'prompt-green':change({variant:2,original:false,green:true},{history:true});notify(t('已切换至层叠花园示范方案。','Switched to the terraced-garden preset.'));break;case'undo':if(versions.length)change(versions.shift());break;case'design-reset':change({original:true,height:1,material:0,night:false,green:true},{history:true});break;
  case'pdf-prev':if(doc.kind==='pdf'&&doc.page>1){doc.page--;renderReview();}break;case'pdf-next':if(doc.kind==='pdf'&&doc.page<doc.pdf.numPages){doc.page++;renderReview();}break;case'upload':$('#file-input').click();break;case'sample':docToSample();renderReview();break;case'issue':issue=v;renderReview();requestAnimationFrame(()=>$('#paragraph-'+v)?.scrollIntoView({behavior:'smooth',block:'center'}));break;case'locate':$('#paragraph-'+v)?.scrollIntoView({behavior:'smooth',block:'center'});break;
- case'tour':case'tour-restart':startTour();break;case'tour-stop':stopTour();break;case'tour-pause':presentation.paused=!presentation.paused;presentation.last=performance.now();if(city)city.autoOrbit=!presentation.paused;renderTour();break;
+ case'tour':case'tour-restart':startTour();break;case'tour-stop':stopTour();break;case'tour-pause':pauseTour(!presentation.paused);break;
  }
 });
 $('#file-input').addEventListener('change',e=>{const file=e.target.files[0];e.target.value='';if(file)uploadFile(file);});
 document.addEventListener('change',e=>{if(e.target.id==='building-select')change({selected:e.target.value});});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&presentation.running)stopTour();if(e.code==='Space'&&presentation.running&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(e.target.tagName)){e.preventDefault();presentation.paused=!presentation.paused;presentation.last=performance.now();if(city)city.autoOrbit=!presentation.paused;renderTour();}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&presentation.running){presentation.paused=true;if(city)city.autoOrbit=false;renderTour();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&presentation.running)stopTour();if(e.code==='Space'&&presentation.running&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(e.target.tagName)){e.preventDefault();pauseTour(!presentation.paused);}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&presentation.running){pauseTour(true);}});
 render();
