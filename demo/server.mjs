@@ -1,0 +1,11 @@
+import {createServer} from 'node:http';
+import {readFile,stat} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+import {spawn} from 'node:child_process';
+const root=path.dirname(fileURLToPath(import.meta.url));
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.wasm':'application/wasm','.svg':'image/svg+xml','.png':'image/png','.json':'application/json','.pdf':'application/pdf','.docx':'application/vnd.openxmlformats-officedocument.wordprocessingml.document'};
+const port=Number(process.env.PORT||4173);
+const server=createServer(async(req,res)=>{try{if(!['GET','HEAD'].includes(req.method)){res.writeHead(405);res.end();return;}const url=new URL(req.url,'http://localhost');let p=decodeURIComponent(url.pathname);if(p==='/')p='/index.html';const file=path.resolve(root,'.'+p);if(!file.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}const s=await stat(file);if(!s.isFile())throw Error('not a file');res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'});res.end(req.method==='HEAD'?undefined:await readFile(file));}catch{res.writeHead(404);res.end('Not found');}});
+server.on('error',e=>{console.error(e.code==='EADDRINUSE'?`Port ${port} is in use. Close the other demo or set PORT to another number.`:e.message);process.exit(1);});
+server.listen(port,'127.0.0.1',()=>{const url=`http://127.0.0.1:${server.address().port}`;console.log(`BuildMind AI is running locally: ${url}\nNo internet connection is required. Keep this window open. Ctrl+C to stop.`);if(!process.argv.includes('--no-open')){const [cmd,args]=process.platform==='darwin'?['open',[url]]:process.platform==='win32'?['cmd',['/c','start','',url]]:['xdg-open',[url]];const child=spawn(cmd,args,{stdio:'ignore'});child.on('error',()=>console.log(`Open ${url} in your browser.`));child.unref();}});
