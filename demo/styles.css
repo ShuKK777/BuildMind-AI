@@ -10,3 +10,10 @@
 .pdf-pagination{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:20px;padding:10px;background:#f4f7f9eF;backdrop-filter:blur(8px)}.pdf-pagination .secondary{height:29px;font-size:10px}.pdf-pagination>span{font-size:11px;color:#8098a4}.pdf-sheet{margin:20px;text-align:center}.pdf-sheet canvas{max-width:100%;height:auto;background:#fff;box-shadow:0 4px 18px #32475716}
 
 .stat-pair>div{min-width:0}.stat-pair>div:last-child strong{font-size:20px;white-space:nowrap;letter-spacing:-.6px}#inspector{overflow-x:hidden}
+
+/* Continuous showcase motion; canvas snapshots cover geometry changes. */
+#scene canvas.scene-crossfade{position:absolute;inset:0;pointer-events:none;z-index:1;will-change:opacity}
+.tour-progress{width:100%!important;transform-origin:left;will-change:transform;transition:none!important}
+.tour-caption strong{display:block;will-change:opacity,transform}
+#scene-heading h1,#scene-heading p,#scene-heading .eyebrow,#scene-foot,#map-legend,.compass{transition:color .85s ease}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}#scene canvas.scene-crossfade{display:none}}
