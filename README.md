@@ -1,34 +1,26 @@
-# 🏗️ BuildMind-AI
+# BuildMind AI · 智筑未来
 
-**BuildMind-AI** is an intelligent architectural design agent powered by Artificial Intelligence.  
-It integrates multi-modal understanding, spatial reasoning, and generative capabilities to assist architects and planners in creating, optimizing, and visualizing building designs.
+面向建筑与城市项目的三模块工作台：**智策（规划）· 智绘（设计）· 智管（施工文档审查）**。
 
----
+## 离线演示 v0.1
 
-## 🚀 Key Features
+比赛与客户演示版本已放在 [`demo/`](demo/README.md)。无需 API key、模型下载、构建或 npm 安装；准备好 Node.js 18+ 和现代浏览器后可断网运行。
 
-- 🧠 **AI-Driven Design** — Automatically generates conceptual layouts and spatial plans based on text or image prompts.  
-- 🏙️ **Spatial Reasoning** — Understands geometric relationships and building constraints.  
-- 🖼️ **Visual Generation** — Produces high-quality architectural renderings using advanced diffusion or generative models.  
-- ⚙️ **Modular Pipeline** — Integrates design, evaluation, and visualization in one unified framework.  
-- 🌍 **Sustainable Focus** — Encourages green and efficient building design through data-informed insights.
+```bash
+node demo/server.mjs
+```
 
----
+浏览器打开 `http://127.0.0.1:4173`。Windows 可双击 `demo/start.bat`；macOS 可执行 `bash demo/start.command`。
 
-## 🧩 Tech Stack
+- **智策**：基于项目 150 × 150 mm 分件打印模型，还原建设前 8 栋、建设后 19 栋的街区；可旋转、缩放、选择建筑，播放预设开发阶段。
+- **智绘**：以最高的 **A02 双翼地标塔** 为唯一替换对象，提供流线曲面、玻璃双塔、层叠空中花园三套方案；可改高度、材质、昼夜、绿化，撤销或恢复打印原塔。
+- **智管**：在本机预览 DOCX/PDF；内置施工示范文档提供问题清单、原文定位和项目演示规则。上传文件明确显示尚未审查。
+- **演示**：90 秒一键播放，支持暂停、重播、退出及中英切换。
 
-- **Python** / **PyTorch** / **Transformers**
-- **Computer Vision:** SAM / Grounding DINO / AnyDoor  
-- **Generative Models:** Stable Diffusion / Gemini-flash / LoRA Fine-Tuning  
-- **Frontend (Optional):** React + Tailwind / Streamlit Interface  
+当前是预制方案驱动的交互演示。没有接入真实城市生成、经济预测、法规检索或自动审查服务；演示数值不是规划指标或工程结论。
 
----
+详细启动、操作、验证和开发说明见 [demo/README.md](demo/README.md)，打印模型来源见 [PRINT_MODEL.md](demo/docs/PRINT_MODEL.md)。
 
-## 🏁 Getting Started
+## 现有研究代码
 
-1. **Clone the repository**
-   ```bash
-   git clone git@github.com:ShuKK777/BuildMind-AI.git
-   cd BuildMind-AI
-
-to be continued...
+[`Retrieval/`](Retrieval/) 保留原有 OpenCLIP / FastAPI 检索实验，与离线演示独立。后续可将多模态检索、参考建筑分析、方案生成、评估与人工确认接入智绘流程。当前演示不调用这些研究服务。
