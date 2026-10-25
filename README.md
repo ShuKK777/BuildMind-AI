@@ -84,6 +84,17 @@
 
 当前仓库开放三模块交互原型与检索研究代码。演示使用预制方案和示例审查，真实生成、仿真及自动审查服务将逐步接入；运行与实现说明统一放在 [`demo/`](demo/README.md)。
 
+<a id="contributors"></a>
+
+## Contributors · 一起把想法变成作品
+
+BuildMind AI 由团队与 AI 开发协作者共同打磨，让产品想法、专业判断与工程实现不断靠近。
+
+| 共创者 | 贡献 |
+| :--- | :--- |
+| **BuildMind AI 团队 · [@ShuKK777](https://github.com/ShuKK777)** | 产品愿景、研究与工程资产、场景定义及项目决策 |
+| **Codex / ChatGPT（OpenAI）** · AI 开发协作者 | 三模块演示开发、界面与视觉设计、三维交互与动效优化、项目文档及 45 秒演示视频制作 |
+
 ---
 
 <p align="center">
