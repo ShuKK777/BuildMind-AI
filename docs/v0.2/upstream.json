@@ -1,0 +1,42 @@
+{
+  "project_version": "0.2.0-planning",
+  "status": "reviewed-not-integrated",
+  "upstream": {
+    "name": "Valdrada",
+    "author": "Mehmet Kerem Turkcan",
+    "repository": "https://github.com/mkturkcan/valdrada",
+    "commit": "5dacc4ae0a34ee54fe70d4706cdf3f6662d596d2",
+    "package_version": "0.6.0",
+    "code_license": "MIT",
+    "license_review": "LICENSING.md contains separate licenses for data, media and assets",
+    "review_date": "2026-10-27"
+  },
+  "preserved_demo": {
+    "branch": "archive/demo-v0.1",
+    "commit": "67b051021d412f3ec17aadc308405badeefdab5f",
+    "directory": "demo"
+  },
+  "candidate_sources": [
+    "src/buildings/",
+    "src/geo.js",
+    "src/batcher.js",
+    "src/kit.js",
+    "src/rng.js",
+    "src/materials.js",
+    "src/textures.js",
+    "core/sim/pathcam.mjs"
+  ],
+  "adaptation_required": [
+    "NYC-specific dimensions and geographic anchor",
+    "semantic IDs after geometry batching",
+    "geometry envelope vs reported height and lot width/depth",
+    "single Three.js revision per app",
+    "traffic and pedestrian graph, globals and data dependencies"
+  ],
+  "validation": {
+    "result": "valdrada-geometry-checks.json",
+    "scope": "CPU geometry construction, not GPU rendering or integration",
+    "three_version": "0.185.1",
+    "cases": 7
+  }
+}
