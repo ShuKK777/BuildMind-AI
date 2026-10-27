@@ -1,0 +1,1 @@
+{"name":"buildmind-ai","version":"0.2.0","private":true,"type":"module","scripts":{"dev":"node demo-v0.2/server.mjs --no-open","start":"node demo-v0.2/server.mjs","test":"node --import ./demo-v0.2/tests/register.mjs --test demo-v0.2/tests/*.test.mjs","test:v01":"node --test demo/tests/*.test.mjs"}}

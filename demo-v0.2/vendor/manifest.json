@@ -1,0 +1,33 @@
+{
+  "package": "three",
+  "version": "0.185.1",
+  "licence": "MIT",
+  "source": "https://www.npmjs.com/package/three/v/0.185.1",
+  "files": [
+    {
+      "path": "OrbitControls.js",
+      "sha256": "faabb4e8dfd9235ee4a9fd7c9a3d75f90f1689dbd4944bd6fd32117dacec5f93",
+      "bytes": 40504
+    },
+    {
+      "path": "Sky.js",
+      "sha256": "1dd7ee025607f425e15d5d9fe9850502905c837f1110c49b376a2501399dbf56",
+      "bytes": 9944
+    },
+    {
+      "path": "THREE-LICENSE.txt",
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+      "bytes": 1081
+    },
+    {
+      "path": "three.core.min.js",
+      "sha256": "05b2609338c76cd65daf74f3ac515bc9a5045e1b3b33edc07d8c9bd55250fa90",
+      "bytes": 385386
+    },
+    {
+      "path": "three.module.min.js",
+      "sha256": "86bcee248b64f44bcfc23c331ae74619061957d59cab040171dcb6fb5900beb6",
+      "bytes": 365552
+    }
+  ]
+}

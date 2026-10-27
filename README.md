@@ -11,7 +11,7 @@
   <a href="docs/PROJECT_CARD.md">项目愿景</a> ·
   <a href="#one-project-three-perspectives">三大模块</a> ·
   <a href="#see-it-take-shape">产品预览</a> ·
-  <a href="demo/README.md">体验演示</a> ·
+  <a href="demo-v0.2/README.md">体验演示</a> ·
   <a href="Retrieval/README.md">研究代码</a>
 </p>
 
@@ -61,13 +61,13 @@
 从实体打印模型走进三维街区：观察城市生长，选中最高的 A02 地标，比较三种建筑表达，再进入施工文件的证据链。一次 **45 秒**的演示，把三个模块串成一个项目故事。
 
 <p align="center">
-  <img src="demo/docs/design-preview.jpg" width="100%" alt="智绘工作台：在原街区中替换 A02 地标，比较流线曲面、玻璃双塔与空中花园" />
+  <img src="demo-v0.2/docs/workbench-preview.jpg" width="100%" alt="智绘工作台：在原街区中替换 A02 地标，比较流线曲面、玻璃双塔与空中花园" />
 </p>
 
-<p align="center"><sub>流线曲面 / 玻璃双塔 / 层叠花园 — 同一块地，三种空间表达。</sub></p>
+<p align="center"><sub>流线曲面 / 玻璃双塔 / 层叠花园 — 同一块地，三种空间表达。0.2 延续北都原有建筑与山水格局。</sub></p>
 
 <p align="center">
-  <a href="demo/README.md"><strong>进入演示 →</strong></a> &nbsp; · &nbsp;
+  <a href="demo-v0.2/README.md"><strong>进入演示 →</strong></a> &nbsp; · &nbsp;
   <a href="demo/docs/review-preview.jpg">查看智管界面</a> &nbsp; · &nbsp;
   <a href="demo/docs/PRINT_MODEL.md">从打印模型到数字街区</a>
 </p>
@@ -82,7 +82,7 @@
 | **参考 → 设计** | 从候选方案交互走向参考条件驱动的生成、评估与迭代 |
 | **文件 → 决策** | 从问题定位走向规范检索、版本关联与工程协同闭环 |
 
-当前仓库开放三模块交互原型与检索研究代码。演示使用预制方案和示例审查，真实生成、仿真及自动审查服务将逐步接入；运行与实现说明统一放在 [`demo/`](demo/README.md)。
+当前仓库开放三模块交互原型与检索研究代码。0.2 接入参数化地标生成与交互编辑，文档审查仍使用示例；参考图驱动生成、城市仿真及自动审查服务将逐步接入；运行与实现说明统一放在 [`demo-v0.2/`](demo-v0.2/README.md)。
 
 <a id="contributors"></a>
 
