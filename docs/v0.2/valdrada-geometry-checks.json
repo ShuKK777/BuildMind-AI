@@ -1,0 +1,187 @@
+{
+  "upstream": "5dacc4ae0a34ee54fe70d4706cdf3f6662d596d2",
+  "three": "185",
+  "registeredTypes": [
+    "tenement",
+    "brownstone",
+    "loft",
+    "prewar",
+    "nycha",
+    "glasstower",
+    "mixeduse",
+    "rowhouse",
+    "castiron",
+    "victorian",
+    "deco",
+    "whitebrick",
+    "gardenapt",
+    "queensrow",
+    "infill",
+    "federal"
+  ],
+  "results": [
+    {
+      "type": "glasstower",
+      "stories": 8,
+      "seed": 9,
+      "returnedHeight": 36.81307356062345,
+      "bounds": {
+        "width": 24.399999618530273,
+        "height": 46.371215871753904,
+        "depth": 29.59000062942505
+      },
+      "meshes": 27,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 27,
+        "tris": 21236,
+        "merged": 182,
+        "instanced": 755
+      },
+      "geometryHash": "d8813726511efc2551c921c224115f60ca01a02030a153d355aba15f33129a06",
+      "ms": 113
+    },
+    {
+      "type": "glasstower",
+      "stories": 16,
+      "seed": 9,
+      "returnedHeight": 55.11307356062345,
+      "bounds": {
+        "width": 24.399999618530273,
+        "height": 62.5213738002207,
+        "depth": 29.59000062942505
+      },
+      "meshes": 27,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 27,
+        "tris": 25652,
+        "merged": 247,
+        "instanced": 852
+      },
+      "geometryHash": "962487ac17c2fe75cd22247760e146736cf50d1a9675c4158681b4f1d7598991",
+      "ms": 41
+    },
+    {
+      "type": "glasstower",
+      "stories": 16,
+      "seed": 9,
+      "returnedHeight": 55.11307356062345,
+      "bounds": {
+        "width": 24.399999618530273,
+        "height": 62.5213738002207,
+        "depth": 29.59000062942505
+      },
+      "meshes": 27,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 27,
+        "tris": 25652,
+        "merged": 247,
+        "instanced": 852
+      },
+      "geometryHash": "962487ac17c2fe75cd22247760e146736cf50d1a9675c4158681b4f1d7598991",
+      "ms": 35
+    },
+    {
+      "type": "glasstower",
+      "stories": 16,
+      "seed": 10,
+      "returnedHeight": 54.71078043522313,
+      "bounds": {
+        "width": 25.200000286102295,
+        "height": 61.16308979902763,
+        "depth": 29.260000705718994
+      },
+      "meshes": 31,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 31,
+        "tris": 30384,
+        "merged": 284,
+        "instanced": 987
+      },
+      "geometryHash": "bb7c7afbc82b68f615ce6f3979b14c77a69d18483b89ee872d6c1143b8e95113",
+      "ms": 40
+    },
+    {
+      "type": "mixeduse",
+      "stories": 6,
+      "seed": 7,
+      "returnedHeight": 20.426585413143037,
+      "bounds": {
+        "width": 24.280000686645508,
+        "height": 24.742528542876244,
+        "depth": 27.255000591278076
+      },
+      "meshes": 35,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 35,
+        "tris": 12848,
+        "merged": 359,
+        "instanced": 404
+      },
+      "geometryHash": "f0671462735a008371cca9dd28a1e8ff1e98755c530d39a3ac37f21167b61ade",
+      "ms": 71
+    },
+    {
+      "type": "deco",
+      "stories": 12,
+      "seed": 5,
+      "returnedHeight": 40.74999999999999,
+      "bounds": {
+        "width": 24.399999618530273,
+        "height": 46.64250188513578,
+        "depth": 28.05299997329712
+      },
+      "meshes": 36,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 36,
+        "tris": 50230,
+        "merged": 810,
+        "instanced": 1042
+      },
+      "geometryHash": "57e4a4d6b154122225667ff1715e7cd499861bc94a19c3d7aea8d4ed7d1d81a8",
+      "ms": 729
+    },
+    {
+      "type": "gardenapt",
+      "stories": 6,
+      "seed": 21,
+      "returnedHeight": 20.35,
+      "bounds": {
+        "width": 24.496305465698242,
+        "height": 23.27000046133995,
+        "depth": 30.374999046325684
+      },
+      "meshes": 40,
+      "nonFinite": 0,
+      "stats": {
+        "drawCalls": 40,
+        "tris": 44366,
+        "merged": 377,
+        "instanced": 741
+      },
+      "geometryHash": "70735681bbd95588b00a1d708078d6e43066b3a16daf57986567258595252ca5",
+      "ms": 215
+    }
+  ],
+  "checks": {
+    "finiteGeometry": true,
+    "seedReproducible": true,
+    "seedVariesGeometry": true,
+    "floorsIncreaseHeight": true
+  },
+  "limits": "CPU geometry and procedural texture construction only; no GPU render or frame-rate validation.",
+  "inputLot": {
+    "width": 24,
+    "depth": 25,
+    "corner": 0,
+    "commercial": true,
+    "mirror": false,
+    "district": "showcase",
+    "frame": "identity Matrix4"
+  }
+}

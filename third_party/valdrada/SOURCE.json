@@ -1,0 +1,108 @@
+{
+  "repository": "https://github.com/mkturkcan/valdrada",
+  "author": "Mehmet Kerem Turkcan",
+  "commit": "5dacc4ae0a34ee54fe70d4706cdf3f6662d596d2",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "src/batcher.js",
+      "sha256": "3ccec4316ffd9d21992b66f65e4d42e5291c06bd19ed405d45474bb2f7bb9768"
+    },
+    {
+      "path": "src/buildings/brownstone.js",
+      "sha256": "49bb17158eec40c782af6195c7a5b945abca31018b7de2b08461658cc9013a0d"
+    },
+    {
+      "path": "src/buildings/castiron.js",
+      "sha256": "99a09362a88862c140cf2dbd403f29993e8f6f90a51416ee7bdcc6c0dfbce54d"
+    },
+    {
+      "path": "src/buildings/deco.js",
+      "sha256": "b2b3054a036e4217d3359748f4ba78fec3927da4631233bc888d57aabd4720be"
+    },
+    {
+      "path": "src/buildings/federal.js",
+      "sha256": "797a6e27812e4f74a03ba7345a71dc039b5d7da5cb11c3b13b03450a9c72e4c1"
+    },
+    {
+      "path": "src/buildings/gardenapt.js",
+      "sha256": "5e4585c6310fc3168f4cf42410ec20b50fdffe4ccfceefcba8597d5bb33f56c6"
+    },
+    {
+      "path": "src/buildings/glasstower.js",
+      "sha256": "4397288e5a13d9384d8ebab89d1ab342e83747620bcc2045de3352c0553459f4"
+    },
+    {
+      "path": "src/buildings/index.js",
+      "sha256": "7b02c6016f23e03348d14782ea40c06d33d9f04bd143ffd75b0c29d27e949973"
+    },
+    {
+      "path": "src/buildings/infill.js",
+      "sha256": "78d5d8c3b5887be40d27dee3a7cc40f30ac18254629c70b4f9b372b198be9991"
+    },
+    {
+      "path": "src/buildings/lib.js",
+      "sha256": "019d8e3e2c7c01f2549c585b38c41cc66f7375509bf53f8954ff7f486c1777fc"
+    },
+    {
+      "path": "src/buildings/loft.js",
+      "sha256": "382d3708f1f2c5cec19d5728ff8901638b3ce496e90eb880552fbaa21b0dc6ce"
+    },
+    {
+      "path": "src/buildings/mixeduse.js",
+      "sha256": "24f3ee90621959618e6bafcf0fd3662b545caa1e3bf6b77d4f48b1d700aaf8d2"
+    },
+    {
+      "path": "src/buildings/nycha.js",
+      "sha256": "fe746f04a1963cdee950b77616627c7015a62e79c80e8ccf306760d9f7e1c0de"
+    },
+    {
+      "path": "src/buildings/prewar.js",
+      "sha256": "1139a52b66a8ada734bfcf9a7b45a078a2014ce2f50491be3ba7e636061fde29"
+    },
+    {
+      "path": "src/buildings/queensrow.js",
+      "sha256": "b5c1c3b7393fcb66b4d6f977220654a484b857fe1db4bbfe1ebd51531e693275"
+    },
+    {
+      "path": "src/buildings/rowhouse.js",
+      "sha256": "028c8c73c23eca8fd62070d0103b0a481956fb1100e0bf599a04bfc289e6fcdc"
+    },
+    {
+      "path": "src/buildings/tenement.js",
+      "sha256": "e616de7d1f3dd6a6fec2392d36093df8efb4ab014a50a623a782e9b61e8c938b"
+    },
+    {
+      "path": "src/buildings/victorian.js",
+      "sha256": "9c378407980160a71f56edef01fd82888bde4de7047ec1d448252f1a0a20784f"
+    },
+    {
+      "path": "src/buildings/whitebrick.js",
+      "sha256": "95adf2d7524a8abed1308bba4b10587b0490c123f49b11e7160139592486f84e"
+    },
+    {
+      "path": "src/geo.js",
+      "sha256": "e22923054f003ca697473aae22ef5f4f3a0aab3e5a34d079a30d30d389a10997"
+    },
+    {
+      "path": "src/kit.js",
+      "sha256": "291cf41fb3fc45484c271c8619052369349ad2580aa31627d5e8b899c24e2d0b"
+    },
+    {
+      "path": "src/materials.js",
+      "sha256": "e37165a55386e0274665dffcce1a19fb14fb6768b24a98e9e1e8c3f14a7a9287"
+    },
+    {
+      "path": "src/rng.js",
+      "sha256": "f6df5881c0741bdbecf7e03676d40e858970361e0907ecea9c97223738cd34f3"
+    },
+    {
+      "path": "src/textures.js",
+      "sha256": "06963a34786279fdb5a74d6b32c3c658de913dee99bbe0d4af0812d7afa66fa4"
+    },
+    {
+      "path": "client/src/sim/signals.js",
+      "sha256": "8832814e28632afff335490ad1a59f00fc29b1667f5c71cd73d7958380e7666c"
+    }
+  ]
+}

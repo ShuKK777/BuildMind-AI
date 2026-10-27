@@ -1,0 +1,1 @@
+{"name":"buildmind-v02-development","private":true,"type":"module","dependencies":{"three":"0.185.1"},"devDependencies":{"@napi-rs/canvas":"0.1.80"}}
