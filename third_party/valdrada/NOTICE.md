@@ -11,7 +11,7 @@ The files listed in `SOURCE.json` are unmodified upstream source. Their SHA-256 
 
 BuildMind adaptations are in `packages/`, outside this directory:
 
-- `building-kit/adapter.js`: explicit landmark families, bounded design input, deterministic massing selection, semantic IDs, actual geometry envelope measurements and lot fitting.
+- `building-kit/adapter.js`: explicit landmark families, bounded design input, deterministic massing selection, semantic IDs, unscaled architectural-metre geometry, actual envelope measurements and plot-envelope checks.
 - `showcase/camera-rig.js`: original-print-coordinate adaptation of the camera interpolation/easing design in upstream `core/sim/pathcam.mjs`; the adaptation carries its attribution header.
 - `scenario/life.js`: our concept-road routes and lightweight vehicle motion using the original upstream signal-phase function. This is not a port of the full NYC traffic or pedestrian simulator.
 
