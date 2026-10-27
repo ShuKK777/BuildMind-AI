@@ -61,7 +61,7 @@
 从实体打印模型走进三维街区：观察城市生长，选中最高的 A02 地标，比较三种建筑表达，再进入施工文件的证据链。一次 **45 秒**的演示，把三个模块串成一个项目故事。
 
 <p align="center">
-  <img src="demo-v0.2/docs/workbench-preview.jpg" width="100%" alt="智绘工作台：在原街区中替换 A02 地标，比较流线曲面、玻璃双塔与空中花园" />
+  <img src="demo-v0.2/docs/architectural-units-preview.jpg" width="100%" alt="智绘工作台：在原街区中替换 A02 地标，比较流线曲面、玻璃双塔与空中花园" />
 </p>
 
 <p align="center"><sub>流线曲面 / 玻璃双塔 / 层叠花园 — 同一块地，三种空间表达。0.2 延续北都原有建筑与山水格局。</sub></p>
